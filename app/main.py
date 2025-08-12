@@ -9,7 +9,7 @@ import logging
 from datetime import datetime
 
 from .database import init_db, get_session
-from .models import Account
+from .models import Account, Task
 
 # Configure a module-level logger for consistent debugging messages.
 logger = logging.getLogger(__name__)
@@ -46,6 +46,16 @@ def render_dashboard(request: Request) -> HTMLResponse:
     except Exception as exc:  # Broad except to log unexpected template errors
         logger.exception("Error rendering dashboard")
         raise HTTPException(status_code=500, detail="Error loading dashboard") from exc
+
+
+@app.get("/tasks-ui", response_class=HTMLResponse, summary="Task management interface")
+def render_tasks_ui(request: Request) -> HTMLResponse:
+    """Serve the HTML interface for basic task management."""
+    try:
+        return templates.TemplateResponse("tasks.html", {"request": request})
+    except Exception as exc:  # Broad except to log unexpected template errors
+        logger.exception("Error rendering tasks page")
+        raise HTTPException(status_code=500, detail="Error loading tasks page") from exc
 
 
 @app.get("/accounts", response_model=list[Account])
@@ -135,4 +145,89 @@ def delete_account(account_id: int) -> dict[str, bool]:
             raise HTTPException(
                 status_code=500,
                 detail="Database error while deleting account",
+            ) from exc
+
+
+@app.get("/tasks", response_model=list[Task])
+def list_tasks() -> list[Task]:
+    """Return all tasks in the system."""
+    with get_session() as session:
+        try:
+            tasks = session.exec(select(Task)).all()
+            return [tsk.model_dump() for tsk in tasks]
+        except SQLAlchemyError as exc:
+            session.rollback()
+            logger.exception("Database error while listing tasks")
+            raise HTTPException(
+                status_code=500,
+                detail="Database error while listing tasks",
+            ) from exc
+
+
+@app.post("/tasks", response_model=Task)
+def create_task(task: Task) -> Task:
+    """Create a new task with database error handling."""
+    with get_session() as session:
+        try:
+            session.add(task)
+            session.commit()
+            session.refresh(task)
+            return task.model_dump()
+        except SQLAlchemyError as exc:
+            session.rollback()
+            logger.exception("Database error while creating a task")
+            raise HTTPException(
+                status_code=500,
+                detail="Database error while creating task",
+            ) from exc
+
+
+@app.put("/tasks/{task_id}", response_model=Task)
+def update_task(task_id: int, task: Task) -> Task:
+    """Update an existing task."""
+    with get_session() as session:
+        try:
+            existing_task = session.get(Task, task_id)
+            if existing_task is None:
+                raise HTTPException(status_code=404, detail="Task not found")
+
+            existing_task.title = task.title
+            existing_task.status = task.status
+            # Accept either a datetime object or ISO string for due_date
+            if isinstance(task.due_date, str):
+                existing_task.due_date = datetime.fromisoformat(task.due_date)
+            else:
+                existing_task.due_date = task.due_date
+            existing_task.account_id = task.account_id
+
+            session.add(existing_task)
+            session.commit()
+            session.refresh(existing_task)
+            return existing_task.model_dump()
+        except SQLAlchemyError as exc:
+            session.rollback()
+            logger.exception("Database error while updating a task")
+            raise HTTPException(
+                status_code=500,
+                detail="Database error while updating task",
+            ) from exc
+
+
+@app.delete("/tasks/{task_id}")
+def delete_task(task_id: int) -> dict[str, bool]:
+    """Remove a task from the system."""
+    with get_session() as session:
+        try:
+            task = session.get(Task, task_id)
+            if task is None:
+                raise HTTPException(status_code=404, detail="Task not found")
+            session.delete(task)
+            session.commit()
+            return {"ok": True}
+        except SQLAlchemyError as exc:
+            session.rollback()
+            logger.exception("Database error while deleting a task")
+            raise HTTPException(
+                status_code=500,
+                detail="Database error while deleting task",
             ) from exc

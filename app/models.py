@@ -37,20 +37,21 @@ class Contact(SQLModel, table=True):
 
 
 class Task(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    account_id: int = Field(foreign_key="account.id")
-    contact_id: Optional[int] = Field(default=None, foreign_key="contact.id")
-    title: str
-    description: Optional[str] = None
-    due_at: Optional[datetime] = None
-    status: str = Field(default="pending")
-    priority: int = Field(default=0)
-    attachments_count: int = Field(default=0)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-    updated_at: datetime = Field(default_factory=datetime.utcnow)
-    completed_at: Optional[datetime] = None
+    """Minimal task record used for basic reminders and follow‑ups.
 
-    # Relationship fields are intentionally omitted for compatibility.
+    Only the fields required for the UI and tests are included. Additional
+    metadata such as descriptions or priorities can be added later without
+    impacting existing functionality.
+    """
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    status: str = "pending"
+    due_date: Optional[datetime] = None
+    account_id: int = Field(foreign_key="account.id")
+
+    # Relationship fields and auditing timestamps are intentionally omitted
+    # to keep the model lightweight and focused for this iteration.
 
 
 class Note(SQLModel, table=True):
