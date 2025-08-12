@@ -1,6 +1,9 @@
 # Changelog
 
 ## Unreleased
+- Added new account routes for listing and retrieving account details.
+- Improved error handling across account endpoints for clearer troubleshooting.
+- Introduced pytest-based test suite for account routes and error scenarios.
 - Scaffold FastAPI application with SQLModel-based data models and database utilities.
 - Added basic account endpoints and health check.
 - Created initial requirements file.
