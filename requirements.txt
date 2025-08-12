@@ -2,3 +2,5 @@ fastapi
 sqlmodel
 uvicorn
 python-dotenv
+pytest
+httpx
