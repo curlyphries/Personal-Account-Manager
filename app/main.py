@@ -1,6 +1,8 @@
 """Entry point for the Personal Account Manager application."""
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from sqlmodel import select
 from sqlalchemy.exc import SQLAlchemyError
 import logging
@@ -14,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Personal Account Manager")
 
+# Configure Jinja2 template loader for the simple web interface.
+templates = Jinja2Templates(directory="app/templates")
+
 
 @app.on_event("startup")
 def on_startup() -> None:
@@ -25,6 +30,12 @@ def on_startup() -> None:
 def read_root() -> dict[str, str]:
     """Simple health check endpoint."""
     return {"status": "ok"}
+
+
+@app.get("/ui", response_class=HTMLResponse, summary="Web interface")
+def render_ui(request: Request) -> HTMLResponse:
+    """Serve the HTML interface for account management."""
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 @app.get("/accounts", response_model=list[Account])
