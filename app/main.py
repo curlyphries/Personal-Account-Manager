@@ -38,6 +38,16 @@ def render_ui(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("index.html", {"request": request})
 
 
+@app.get("/dashboard", response_class=HTMLResponse, summary="Application dashboard")
+def render_dashboard(request: Request) -> HTMLResponse:
+    """Render the dashboard page with basic error handling for transparency."""
+    try:
+        return templates.TemplateResponse("dashboard.html", {"request": request})
+    except Exception as exc:  # Broad except to log unexpected template errors
+        logger.exception("Error rendering dashboard")
+        raise HTTPException(status_code=500, detail="Error loading dashboard") from exc
+
+
 @app.get("/accounts", response_model=list[Account])
 def list_accounts() -> list[Account]:
     """Return all accounts in the system."""
