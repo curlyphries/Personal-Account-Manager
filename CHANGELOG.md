@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Added dashboard interface and navigation links for easier page access.
 - Added cloning instructions to README for new developers.
 - Updated cloning example to use the curlyphries GitHub account.
 - Added logging to database initialization and session helpers for clearer troubleshooting.
