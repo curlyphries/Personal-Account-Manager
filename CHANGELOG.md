@@ -6,3 +6,4 @@
 - Created initial requirements file.
 - Included placeholder `data/` directory for local SQLite storage.
 - Wrapped account endpoints with SQLAlchemy error handling and logging for clearer troubleshooting.
+- Added endpoints to update and delete accounts with consistent error handling.
