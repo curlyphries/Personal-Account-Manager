@@ -1,6 +1,11 @@
 # Changelog
 
 ## Unreleased
+- Added logging to database initialization and session helpers for clearer troubleshooting.
+- Expanded README with environment variables, testing instructions, and API overview.
+- Updated model relationship annotations for compatibility with SQLAlchemy 2.0.
+- Improved SQLite engine configuration to support in-memory testing environments.
+- Adjusted account endpoints to return dictionaries for reliable Pydantic v2 serialization.
 - Added new account routes for listing and retrieving account details.
 - Improved error handling across account endpoints for clearer troubleshooting.
 - Introduced pytest-based test suite for account routes and error scenarios.

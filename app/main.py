@@ -32,7 +32,9 @@ def list_accounts() -> list[Account]:
     """Return all accounts in the system."""
     with get_session() as session:
         try:
-            return session.exec(select(Account)).all()
+            accounts = session.exec(select(Account)).all()
+            # Return plain dicts to avoid serialization issues with SQLModel under Pydantic v2.
+            return [acc.model_dump() for acc in accounts]
         except SQLAlchemyError as exc:
             session.rollback()  # Ensure the session is clean for subsequent operations.
             logger.exception("Database error while listing accounts")
@@ -53,7 +55,7 @@ def create_account(account: Account) -> Account:
             session.add(account)
             session.commit()
             session.refresh(account)
-            return account
+            return account.model_dump()
         except SQLAlchemyError as exc:
             session.rollback()  # Prevent partial commits on failure.
             logger.exception("Database error while creating an account")
@@ -85,7 +87,7 @@ def update_account(account_id: int, account: Account) -> Account:
             session.add(existing_account)
             session.commit()
             session.refresh(existing_account)
-            return existing_account
+            return existing_account.model_dump()
         except SQLAlchemyError as exc:
             session.rollback()
             logger.exception("Database error while updating an account")
