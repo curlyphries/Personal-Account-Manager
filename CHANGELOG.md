@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Added cloning instructions to README for new developers.
+- Updated cloning example to use the curlyphries GitHub account.
 - Added logging to database initialization and session helpers for clearer troubleshooting.
 - Expanded README with environment variables, testing instructions, and API overview.
 - Updated model relationship annotations for compatibility with SQLAlchemy 2.0.
