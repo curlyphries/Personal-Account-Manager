@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Documented virtual environment setup commands in README for clearer onboarding.
 - Added cloning instructions to README for new developers.
 - Updated cloning example to use the curlyphries GitHub account.
 - Added logging to database initialization and session helpers for clearer troubleshooting.

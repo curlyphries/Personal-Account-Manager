@@ -9,7 +9,11 @@ A minimal FastAPI application for managing accounts, contacts, tasks, notes, and
    git clone https://github.com/curlyphries/Personal-Account-Manager.git
    cd Personal-Account-Manager
    ```
-2. Create and activate a virtual environment.
+2. Create and activate a virtual environment:
+   ```bash
+   python3 -m venv .venv        # create venv
+   source .venv/bin/activate    # activate
+   ```
 3. Install dependencies:
    ```bash
    pip install -r requirements.txt
