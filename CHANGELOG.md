@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+- Introduced a minimal HTML web interface at `/ui` for account management.
+- Added Jinja2 dependency and template loader for the web interface.
 - Added cloning instructions to README for new developers.
 - Updated cloning example to use the curlyphries GitHub account.
 - Added logging to database initialization and session helpers for clearer troubleshooting.

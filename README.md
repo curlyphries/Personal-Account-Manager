@@ -20,6 +20,7 @@ A minimal FastAPI application for managing accounts, contacts, tasks, notes, and
    ```
 
 The API will be available at `http://localhost:8000`. A basic health check lives at the root endpoint.
+Navigate to `/ui` in your browser for a minimal web interface to manage accounts.
 
 ### Environment Variables
 
@@ -39,6 +40,7 @@ pytest
 Current account endpoints:
 
 - `GET /` – health check.
+- `GET /ui` – basic HTML interface for managing accounts.
 - `GET /accounts` – list all accounts.
 - `POST /accounts` – create a new account.
 - `PUT /accounts/{id}` – update an existing account.
