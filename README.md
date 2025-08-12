@@ -12,7 +12,11 @@ A minimal FastAPI application for managing accounts, contacts, tasks, notes, and
 2. Create and activate a virtual environment:
    ```bash
    python3 -m venv .venv        # create venv
-   source .venv/bin/activate    # activate
+   source .venv/bin/activate    # activate (use `.venv\Scripts\activate` on Windows)
+   ```
+   When finished, exit the environment:
+   ```bash
+   deactivate
    ```
 3. Install dependencies:
    ```bash
