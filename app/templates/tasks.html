@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Personal Account Manager</title>
+  <title>Tasks</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 2rem; }
     nav a { margin-right: 1rem; }
@@ -18,34 +18,37 @@
     <a href="/tasks-ui">Tasks</a>
     <a href="/dashboard">Dashboard</a>
   </nav>
-  <h1>Accounts</h1>
+  <h1>Tasks</h1>
   <div id="error"></div>
   <form id="create-form">
-    <input type="text" id="name" placeholder="Account name" required />
+    <input type="text" id="title" placeholder="Task title" required />
+    <input type="number" id="account_id" placeholder="Account ID" required />
+    <input type="date" id="due_date" />
     <button type="submit">Create</button>
   </form>
-  <table id="accounts">
+  <table id="tasks">
     <thead>
-      <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+      <tr><th>ID</th><th>Title</th><th>Status</th><th>Due Date</th><th>Account</th><th>Actions</th></tr>
     </thead>
     <tbody></tbody>
   </table>
   <script>
-    // Fetch and display accounts from the API.
-    async function fetchAccounts() {
+    // Fetch and display tasks from the API.
+    async function fetchTasks() {
       const errorEl = document.getElementById('error');
       errorEl.textContent = '';
       try {
-        const resp = await fetch('/accounts');
+        const resp = await fetch('/tasks');
         if (!resp.ok) {
-          throw new Error('Failed to load accounts');
+          throw new Error('Failed to load tasks');
         }
-        const accounts = await resp.json();
-        const tbody = document.querySelector('#accounts tbody');
+        const tasks = await resp.json();
+        const tbody = document.querySelector('#tasks tbody');
         tbody.innerHTML = '';
-        for (const acc of accounts) {
+        for (const tsk of tasks) {
+          const due = tsk.due_date ? new Date(tsk.due_date).toLocaleDateString() : '';
           const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${acc.id}</td><td>${acc.name}</td><td><button data-id="${acc.id}">Delete</button></td>`;
+          tr.innerHTML = `<td>${tsk.id}</td><td>${tsk.title}</td><td>${tsk.status}</td><td>${due}</td><td>${tsk.account_id}</td><td><button data-id="${tsk.id}">Delete</button></td>`;
           tbody.appendChild(tr);
         }
       } catch (err) {
@@ -54,23 +57,32 @@
       }
     }
 
-    // Handle create account form submission.
+    // Handle create task form submission.
     document.getElementById('create-form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const nameInput = document.getElementById('name');
+      const titleInput = document.getElementById('title');
+      const accountInput = document.getElementById('account_id');
+      const dueInput = document.getElementById('due_date');
       const errorEl = document.getElementById('error');
       errorEl.textContent = '';
       try {
-        const resp = await fetch('/accounts', {
+        const body = {
+          title: titleInput.value,
+          account_id: parseInt(accountInput.value, 10),
+          due_date: dueInput.value ? new Date(dueInput.value).toISOString() : null
+        };
+        const resp = await fetch('/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: nameInput.value })
+          body: JSON.stringify(body)
         });
         if (!resp.ok) {
-          throw new Error('Failed to create account');
+          throw new Error('Failed to create task');
         }
-        nameInput.value = '';
-        await fetchAccounts();
+        titleInput.value = '';
+        accountInput.value = '';
+        dueInput.value = '';
+        await fetchTasks();
       } catch (err) {
         console.error(err);
         errorEl.textContent = err.message;
@@ -78,17 +90,17 @@
     });
 
     // Delegate delete button clicks.
-    document.querySelector('#accounts tbody').addEventListener('click', async (e) => {
+    document.querySelector('#tasks tbody').addEventListener('click', async (e) => {
       if (e.target.tagName === 'BUTTON') {
         const id = e.target.getAttribute('data-id');
         const errorEl = document.getElementById('error');
         errorEl.textContent = '';
         try {
-          const resp = await fetch(`/accounts/${id}`, { method: 'DELETE' });
+          const resp = await fetch(`/tasks/${id}`, { method: 'DELETE' });
           if (!resp.ok) {
-            throw new Error('Failed to delete account');
+            throw new Error('Failed to delete task');
           }
-          await fetchAccounts();
+          await fetchTasks();
         } catch (err) {
           console.error(err);
           errorEl.textContent = err.message;
@@ -96,8 +108,8 @@
       }
     });
 
-    // Initial load of accounts.
-    fetchAccounts();
+    // Initial load of tasks.
+    fetchTasks();
   </script>
 </body>
 </html>

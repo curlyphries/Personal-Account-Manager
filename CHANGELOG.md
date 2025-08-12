@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Introduced minimal Task model with CRUD API, web interface, and tests.
 - Added dashboard interface and navigation links for easier page access.
 - Added cloning instructions to README for new developers.
 - Updated cloning example to use the curlyphries GitHub account.
