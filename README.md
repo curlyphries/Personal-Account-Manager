@@ -4,12 +4,17 @@ A minimal FastAPI application for managing accounts, contacts, tasks, notes, and
 
 ## Development Setup
 
-1. Create and activate a virtual environment.
-2. Install dependencies:
+1. Open your terminal and run these commands to copy the project to your computer:
+   ```bash
+   git clone https://github.com/curlyphries/Personal-Account-Manager.git
+   cd Personal-Account-Manager
+   ```
+2. Create and activate a virtual environment.
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Run the application:
+4. Run the application:
    ```bash
    uvicorn app.main:app --reload
    ```
