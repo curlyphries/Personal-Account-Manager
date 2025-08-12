@@ -5,3 +5,4 @@
 - Added basic account endpoints and health check.
 - Created initial requirements file.
 - Included placeholder `data/` directory for local SQLite storage.
+- Wrapped account endpoints with SQLAlchemy error handling and logging for clearer troubleshooting.
